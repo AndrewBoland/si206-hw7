@@ -114,7 +114,6 @@ umsi_tweets = get_user_tweets("umsi")
 
 # (You should do nested data investigation on the umsi_tweets value to figure out how to pull out the data correctly!)
 
-# TODO check this
 for tweet in umsi_tweets:
     info = []
     insertStatement = 'INSERT INTO Tweets VALUES (?, ?, ?, ?, ?)'
