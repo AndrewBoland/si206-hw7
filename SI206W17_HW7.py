@@ -70,8 +70,10 @@ def get_user_tweets(user_handle):
 
     for item in response:
         twenty_tweets.append(item)
+    #print(twenty_tweets[1])
 
     return twenty_tweets
+
 
 
 # Write code to create/build a connection to a database: tweets.db,
@@ -112,11 +114,21 @@ umsi_tweets = get_user_tweets("umsi")
 
 # (You should do nested data investigation on the umsi_tweets value to figure out how to pull out the data correctly!)
 
+# TODO check this
+for tweet in umsi_tweets:
+    info = []
+    insertStatement = 'INSERT INTO Tweets VALUES (?, ?, ?, ?, ?)'
+    info.append(tweet["id"])
+    info.append(tweet["user"]["screen_name"])
+    info.append(tweet["created_at"])
+    info.append(tweet["text"])
+    info.append(tweet["retweet_count"])
+    cur.execute(insertStatement, info)
 
 
 
 # Use the database connection to commit the changes to the database
-
+conn.commit()
 
 
 # You can check out whether it worked in the SQLite browser! (And with the tests.)
@@ -130,17 +142,25 @@ umsi_tweets = get_user_tweets("umsi")
 
 
 # Select from the database all of the TIMES the tweets you collected were posted and fetch all the tuples that contain them in to the variable tweet_posted_times.
-
+selectTimesStatement = 'SELECT time_posted FROM Tweets'
+cur.execute(selectTimesStatement)
+tweet_posted_times = cur.fetchall()
 
 # Select all of the tweets (the full rows/tuples of information) that have been retweeted MORE than 2 times, and fetch them into the variable more_than_2_rts.
-
+selectRetweetedStatement = 'SELECT * FROM Tweets WHERE retweets > 2'
+cur.execute(selectRetweetedStatement)
+more_than_2_rts = cur.fetchall()
 
 
 # Select all of the TEXT values of the tweets that are retweets of another account (i.e. have "RT" at the beginning of the tweet text). Save the FIRST ONE from that group of text values in the variable first_rt. Note that first_rt should contain a single string value, not a tuple.
+selectRetweetsStatement = 'SELECT tweet_text FROM Tweets WHERE tweet_text LIKE "RT%"'
+cur.execute(selectRetweetsStatement)
+first_rt = cur.fetchone()[0]
 
 
 
 # Finally, done with database stuff for a bit: write a line of code to close the cursor to the database.
+conn.close()
 
 
 
